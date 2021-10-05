@@ -1,2 +1,3 @@
 # svelte-contrib
-Library of helpful Svelte utilities.
+
+A library of helpful Svelte utilities.
