@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 // https://api.emberjs.com/ember/release/functions/@ember%2Fobject%2Fcomputed/reads
 
 export default function reads(store) {
-	const alias  = writable();
+    const alias  = writable();
     const unsub  = store.subscribe(value => alias.set(value));
     const detach = () => {
         unsub();
@@ -14,10 +14,10 @@ export default function reads(store) {
         update: fn  => { detach(); return alias.update(fn); },
     };
 
-	return {
+    return {
         set:    val => handler.set(val),
         update: fn  => handler.update(fn),
         detach: ()  => void(handler === alias || detach()),
-		subscribe: alias.subscribe,
-	};
+        subscribe: alias.subscribe,
+    };
 }

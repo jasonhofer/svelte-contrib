@@ -1,6 +1,6 @@
 
 export default function isWritable(value) {
-	return (
+    return (
         value != null &&
         typeof value.subscribe === 'function' &&
         typeof value.set === 'function'

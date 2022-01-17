@@ -71,11 +71,11 @@ export function mediaQuery(queryStr) {
     const query = matchMedia(queryStr);
 
     return readable(query.matches, set => {
-		const listener = e => set(e.matches);
-		query.addEventListener('change', listener);
+        const listener = e => set(e.matches);
+        query.addEventListener('change', listener);
 
         return () => query.removeEventListener('change', listener);
-	});
+    });
 }
 
 export const breakpoints = {

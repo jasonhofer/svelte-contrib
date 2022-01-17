@@ -1,6 +1,6 @@
 
 export default function isReadable(value) {
-	return (
+    return (
         value != null &&
         typeof value.subscribe === 'function'
     );
