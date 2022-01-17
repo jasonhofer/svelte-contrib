@@ -19,7 +19,7 @@ function applyExtensions(_) {
 		return this.persistStore(key, writable(this.get(key, alt)));
 	});
 
-	// storage.persisStore('my_value', myStore);
+	// storage.persistStore('my_value', myStore);
 	_.fn('persistStore', function (key, store) {
 		store.detach = store.subscribe(value => this.set(key, value));
 		return store;
