@@ -25,13 +25,13 @@ export function responsive(breakpoints) {
 
     const queries = Object.entries(breakpoints)
         .sort((a, b) => b[1] - a[1])
-        .reduce((obj, [name, min]) => {
+        .reduce((queries, [name, min]) => {
             const only = name + '_only';
-            const str = `screen and (min-width: ${min})`;
-            obj[name] = matchMedia(str);
-            obj[only] = matchMedia(str + (max > 0 ? ` and (max-width: ${max}px)` : ''));
+            const str = `screen and (min-width: ${min}px)`;
+            queries[name] = matchMedia(str);
+            queries[only] = matchMedia(str + (max > 0 ? ` and (max-width: ${max}px)` : ''));
             max = min - 1;
-            return obj;
+            return queries;
         }, {});
 
     const getResults = () => (
