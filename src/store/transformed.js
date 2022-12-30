@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 export default function transformed(value, transform) {
     const store         = writable(value);
