@@ -5,12 +5,12 @@ const tickers = {};
 export default function ticker(period = 'second') {
     const ms = isNaN(period) ? toMillis(period) : +period;
 
-    if (ms < 1) {
-        throw new Error('Invalid period given to ticker: ' + period);
-    }
-
     if (tickers[ms]) {
         return tickers[ms];
+    }
+
+    if (ms < 1) {
+        throw new Error('Invalid period given to ticker: ' + period);
     }
 
     if (1 === ms) {
@@ -36,10 +36,10 @@ export default function ticker(period = 'second') {
     });
 
     // Skip the first call, it will most likely be late.
-    const origSubscribe = ticker.subscribe;
-    ticker.subscribe = function (run, ...args) {
-        let handler = () => handler = run;
-        return origSubscribe(newValue => {
+    const subscribe = ticker.subscribe;
+    ticker.subscribe = function (listener, ...args) {
+        let handler = () => handler = listener;
+        return subscribe(newValue => {
             handler(newValue);
         }, ...args);
     };

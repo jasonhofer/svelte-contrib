@@ -3,7 +3,7 @@ import toWritable from '@/store/utils/toWritable';
 
 function noop() { return noop; }
 
-it('returns original object if already a readable', async () => {
+it('returns original object if already a writable', async () => {
     const r = readable();
     const w = writable();
     const d = derived(w, noop);

@@ -1,4 +1,4 @@
-import { readable, writable, derived, get } from 'svelte/store';
+import { readable, writable, get } from 'svelte/store';
 import linkStores from '@/store/utils/linkStores';
 
 it('sets stores to the value of the first store', async () => {
@@ -14,6 +14,7 @@ it('sets stores to the value of the first store', async () => {
 });
 
 // @TODO Not sure if this is the bahavior we want.
+//       First store could potentially be readable?
 it('ignores read-only stores', async () => {
     const s1 = readable(12);
     const s2 = writable(34);
