@@ -10,20 +10,15 @@ import clsx from 'clsx';
  * @returns {Object}
  */
 export default function classes(node, props) {
-	let previouslyAdded = [];
-	const update = props => {
-    const adding = clsx(props)
-      .split(' ').filter(s => s);
-    const removing = previouslyAdded
-      .filter(
-        s => !adding.includes(s)
-      );
-    removing.length && node.classList.remove(...removing);
-    adding.length && node.classList.add(...adding);
+    let previouslyAdded = [];
+    const update = props => {
+        const adding = clsx(props).split(' ').filter(Boolean);
+        const removing = previouslyAdded.filter(c => !adding.includes(c));
+        removing.length && node.classList.remove(...removing);
+        adding.length && node.classList.add(...adding);
         previouslyAdded = adding;
-	};
+    };
+    update(props);
 
-  update(props);
-
-	return { update };
+    return { update };
 }
