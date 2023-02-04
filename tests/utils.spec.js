@@ -1,4 +1,4 @@
-import { toMillis } from '@/utils';
+import { toMillis, camel, hasProp } from '@/utils';
 
 const MS_SECOND = 1000;
 const MS_MINUTE = 60 * MS_SECOND;
@@ -91,5 +91,63 @@ describe('toMillis()', () => {
   it('returns infinity when given infinity', () => {
     expect(toMillis(Infinity)).toBe(Infinity);
   });
+
+});
+
+describe('Other:', () => {
+
+    test('camel()', () => {
+        expect(camel('foo bar baz')).toBe('fooBarBaz');
+        expect(camel('foo_bar_baz')).toBe('fooBarBaz');
+        expect(camel('foo-bar-baz')).toBe('fooBarBaz');
+        expect(camel('FooBarBaz')).toBe('fooBarBaz');
+        expect(camel('Foo_Bar_Baz')).toBe('fooBarBaz');
+        expect(camel('foo    bar    baz')).toBe('fooBarBaz');
+        expect(camel('foo_  -_bar?#( $($baz')).toBe('fooBarBaz');
+        expect(camel('fooBarBaz')).toBe('fooBarBaz');
+
+        expect(camel('FOO123BAR456BAZ')).toBe('foo123Bar456Baz');
+        expect(camel('foo123bar456baz')).toBe('foo123Bar456Baz');
+        expect(camel('foo123Bar456Baz')).toBe('foo123Bar456Baz');
+    });
+
+    test('hasProp()', () => {
+        class MyClass {
+            prop1 = 123;
+            #prop2 = 234;
+            constructor() {
+                this.prop3 = 345;
+            }
+            get prop4() { return 456; }
+        }
+        const o1 = new MyClass();
+
+        expect(hasProp(o1, 'prop1')).toBeTruthy();
+        expect(hasProp(o1, '#prop2')).toBeFalsy();
+        expect(hasProp(o1, 'prop2')).toBeFalsy();
+        expect(hasProp(o1, 'prop3')).toBeTruthy();
+        expect(hasProp(o1, 'prop4')).toBeTruthy();
+
+        const o2 = {
+            prop1: 123,
+            get prop2() { return 234; },
+        };
+        Object.defineProperty(o2, 'prop3', {value: 345});
+
+        expect(hasProp(o2, 'prop1')).toBeTruthy();
+        expect(hasProp(o2, 'prop2')).toBeTruthy();
+        expect(hasProp(o2, 'prop3')).toBeTruthy();
+
+        function FuncClass() {
+            this.prop1 = 123;
+        }
+        FuncClass.prototype.prop2 = 234;
+        const o3 = new FuncClass();
+        Object.defineProperty(o3, 'prop3', {value: 345});
+
+        expect(hasProp(o3, 'prop1')).toBeTruthy();
+        expect(hasProp(o3, 'prop2')).toBeTruthy();
+        expect(hasProp(o3, 'prop3')).toBeTruthy();
+    });
 
 });
