@@ -41,5 +41,6 @@ function toDateTime(dt) {
     if (dt instanceof Date)      return DateTime.fromJSDate(dt);
     if (!isNaN(dt))              return DateTime.fromMillis(+dt);
 
+    // @TODO regex detection?
     return DateTime.fromISO(dt);
 }

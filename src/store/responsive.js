@@ -22,14 +22,15 @@ export function responsive(breakpoints) {
     }
 
     let max = 0;
+    const queryStrings = {};
 
     const queries = Object.entries(breakpoints)
         .sort((a, b) => b[1] - a[1])
         .reduce((queries, [name, min]) => {
             const only = name + '_only';
             const str = `screen and (min-width: ${min}px)`;
-            queries[name] = matchMedia(str);
-            queries[only] = matchMedia(str + (max > 0 ? ` and (max-width: ${max}px)` : ''));
+            queries[name] = matchMedia(queryStrings[name] = str);
+            queries[only] = matchMedia(queryStrings[only] = str + (max > 0 ? ` and (max-width: ${max}px)` : ''));
             max = min - 1;
             return queries;
         }, {});
@@ -52,7 +53,7 @@ export function responsive(breakpoints) {
         )
     );
 
-    return readable(getResults(), (set) => {
+    const store = readable(getResults(), (set) => {
         const unsubs = Object.keys(queries).map((name) => {
             const listener = () => set(getResults());
             queries[name].addEventListener('change', listener);
@@ -61,6 +62,11 @@ export function responsive(breakpoints) {
 
         return () => unsubs.forEach(unsub => unsub());
     });
+
+    store.getBreakpoints = () => ({...breakpoints});
+    store.getQueryStrings = () => ({...queryStrings});
+
+    return store;
 }
 
 export function mediaQuery(queryStr) {

@@ -1,5 +1,5 @@
 import { writable, derived, get } from 'svelte/store';
-import isWritable from './isWritable';
+import isWritable from './utils/isWritable';
 
 export default function collection(array) {
     return applyMethods(writable(array || []));
@@ -21,8 +21,10 @@ function applyMethods(store) {
     };
 
     //store.concat = wrap('concat'); // use cases?
-    store.filter = wrap('filter');
-    store.map    = wrap('map');
+    store.flat    = wrap('flat');
+    store.filter  = wrap('filter');
+    store.map     = wrap('map');
+    store.flatMap = wrap('flatMap');
     //store.slice  = wrap('slice'); // use cases?
 
     // Safe methods that do not return the array.
@@ -30,17 +32,21 @@ function applyMethods(store) {
         return (...args) => derived(store, $array => $array[method](...args));
     };
 
+    store.at          = wrap('at');
+    store.includes    = wrap('includes');
     store.every       = wrap('every');
     store.some        = wrap('some');
     store.find        = wrap('find');
     store.findIndex   = wrap('findIndex');
+    store.findLast    = wrap('findLast');
+    store.findLastIndex = wrap('findLastIndex');
     store.indexOf     = wrap('indexOf');
     store.lastIndexOf = wrap('lastIndexOf');
     store.join        = wrap('join');
     store.reduce      = wrap('reduce');
     store.reduceRight = wrap('reduceRight');
 
-    // Un-safe methods that mutate and return the original array.
+    // Un-safe methods that would mutate and return the original array.
     wrap = function (method) {
         return (...args) => applyMethods(derived(store, $array => [...$array][method](...args)));
     };
@@ -65,7 +71,7 @@ function applyMethods(store) {
         return store;
     }
 
-    // Un-safe methods that mutate the array.
+    // Un-safe methods that will mutate the original array.
     wrap = function (method) {
         return (...args) => {
             let ret;

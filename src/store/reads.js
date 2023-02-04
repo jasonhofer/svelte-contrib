@@ -4,20 +4,28 @@ import { writable } from 'svelte/store';
 
 export default function reads(store) {
     const alias  = writable();
-    const unsub  = store.subscribe(value => alias.set(value));
+    let unsub, handler;
     const detach = () => {
+        if (!unsub) return;
         unsub();
         handler = alias;
+        unsub = null;
     };
-    let handler = {
+    const attach = () => {
+      if (unsub) return;
+      unsub = store.subscribe($val => alias.set($val));
+      handler = {
         set:    val => { detach(); return alias.set(val); },
         update: fn  => { detach(); return alias.update(fn); },
+      };
     };
+    attach();
 
     return {
         set:    val => handler.set(val),
         update: fn  => handler.update(fn),
-        detach: ()  => void(handler === alias || detach()),
+        detach,
+        attach,
         subscribe: alias.subscribe,
     };
 }
